@@ -52,7 +52,7 @@ int main(void) {
     const float WEIGHT_HEADING = 1.0f; /* Unghiul conteaza mult pe curbe mari */
     const float STEER_ALPHA =
         0.7f; /* 70% smoothing - tine volanul stabil dar puternic */
-    const float TEST_SPEED_SCALE = 0.6f; /* 1.0 = viteza maxima din Config.h */
+
     const float IMAGE_CENTER_X =
         39.0f;                    /* Centrul imaginii Pixy2 Line Tracking */
     const float MIN_DY = 8.0f;    /* Ignora vectori mai plati de 8px pe Y */
@@ -208,29 +208,30 @@ int main(void) {
         } else if (frames_lost > 0) {
             /* Pierdut temporar - incetineste dar pastreaza directia */
             Steer(current_steer);
-            float sf = 0.5f * TEST_SPEED_SCALE;
+            float sf = 0.5f;
             int speed_L = (int)((float)SPEED_LEFT * sf);
             int speed_R = (int)((float)SPEED_RIGHT * sf);
             HbridgeSpeed(&g_hbridge, speed_L, speed_R);
         } else {
-            /* Conducere normala (fara diferential) */
+            /* Conducere normala cu Diferential Electronic */
             Steer(current_steer);
-            float abs_steer =
-                current_steer > 0.0f ? current_steer : -current_steer;
+            
+            int speed_L = SPEED_LEFT;
+            int speed_R = SPEED_RIGHT;
 
-            // Incetinire globala pe curba pentru stabilitate (pana la 60% la
-            // viraj maxim)
-            float speed_factor =
-                (1.0f - (abs_steer * 0.006f)) * TEST_SPEED_SCALE;
-
-            int speed_L = (int)((float)SPEED_LEFT * speed_factor);
-            int speed_R = (int)((float)SPEED_RIGHT * speed_factor);
+            // Diferential Electronic: reducem viteza rotii interioare pe curba
+            if (current_steer > 0.0f) {
+                float diff_factor = 1.0f - (current_steer * 0.005f);
+                speed_R = (int)((float)SPEED_RIGHT * diff_factor);
+            } else if (current_steer < 0.0f) {
+                float diff_factor = 1.0f - (-current_steer * 0.005f);
+                speed_L = (int)((float)SPEED_LEFT * diff_factor);
+            }
 
             HbridgeSpeed(&g_hbridge, speed_L, speed_R);
 
             if (do_print)
-                PRINTF("STR:%d SPD_L:%d SPD_R:%d\r\n", (int)current_steer,
-                       speed_L, speed_R);
+                PRINTF("STR:%d SPD_L:%d SPD_R:%d\r\n", (int)current_steer, speed_L, speed_R);
         }
     }
 }
