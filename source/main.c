@@ -37,6 +37,14 @@ int main(void) {
               &LP_FLEXCOMM2_TX_Handle);
     pixy_set_led(&cam1, 255, 0, 0);
 
+    /* ===== Asteptare de pornire (Timer) ===== */
+    PRINTF("Asteptare start %d secunde...\r\n", STARTUP_DELAY_SECONDS);
+    for (int i = STARTUP_DELAY_SECONDS; i > 0; i--) {
+        PRINTF("%d...\r\n", i);
+        SDK_DelayAtLeastUs(1000000, SystemCoreClock);
+    }
+    PRINTF("START!\r\n");
+
     /* ===== VARIABILE DE STARE ===== */
     float last_error = 0.0f;
     int frames_lost = 0;
