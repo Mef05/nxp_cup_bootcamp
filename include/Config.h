@@ -16,7 +16,7 @@
 #define STARTUP_DELAY_SECONDS 4
 
 // Wheel speeds
-#define SPEED_RIGHT 40
-#define SPEED_LEFT 40
+#define SPEED_RIGHT 85
+#define SPEED_LEFT 85
 
 #endif
