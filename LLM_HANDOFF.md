@@ -20,11 +20,10 @@ The NXP SDK function `CTIMER_UpdatePwmDutycycle()` (in `fsl_ctimer.c`) calculate
 // NXP SDK Implementation
 pulsePeriod = ((uint64_t)period * (100U - (uint32_t)dutyCyclePercent)) / 100U;
 ```
-If you ask for `duty = 20`, the pin stays HIGH for `80%` of the time.
-
 **The Fix (in `source/hbridge.c`):**
-The NXP Cup hardware uses a driver where PWM acts as the ENABLE pin.
-Since SDK generates HIGH pulses for `(100 - duty)%` of the time, and the motors run when PWM is HIGH, we must pass `duty = 100 - speed` for ALL directions (both Forward and Reverse).
+Due to the H-Bridge wiring and NXP SDK logic, the duty cycle calculation is asymmetric based on the `DIR` pin:
+* **Forward (`DIR=1`)**: Motor receives power when PWM is LOW. SDK sets LOW time = `100 - duty`. Thus, we pass `duty = 100 - speed`.
+* **Reverse (`DIR=0`)**: Motor receives power when PWM is HIGH. SDK sets HIGH time = `duty`. Thus, we pass `duty = speed`.
 * The `HbridgeSpeed()` function abstracts this inversion completely. 
 * `HbridgeSpeed(12, 12)` guarantees exactly 12% power applied forward to both motors.
 
