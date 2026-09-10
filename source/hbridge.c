@@ -70,11 +70,10 @@ void HbridgeSpeed(Hbridge *h, int16_t speed1, int16_t speed2)
 
 void HbridgeBrake(Hbridge *h)
 {
-    /* Brake = Both terminals LOW. DIR=0, PWM=LOW. 
-       To get PWM LOW 100% of the time, SDK needs duty=100. */
+    /* Coast = DIR=0, PWM=LOW (0%). */
     GPIO_PinWrite(h->motor1DirPort, h->motor1DirPin, 0U);
     GPIO_PinWrite(h->motor2DirPort, h->motor2DirPin, 0U);
 
-    CTIMER_UpdatePwmDutycycle(h->pwmPeripheral, h->periodChannel, h->pwm1Channel, 100U);
-    CTIMER_UpdatePwmDutycycle(h->pwmPeripheral, h->periodChannel, h->pwm2Channel, 100U);
+    CTIMER_UpdatePwmDutycycle(h->pwmPeripheral, h->periodChannel, h->pwm1Channel, 0U);
+    CTIMER_UpdatePwmDutycycle(h->pwmPeripheral, h->periodChannel, h->pwm2Channel, 0U);
 }
