@@ -195,7 +195,7 @@ instance:
 const ctimer_config_t CTIMER0_config = {
   .mode = kCTIMER_TimerMode,
   .input = kCTIMER_Capture_0,
-  .prescale = 0
+  .prescale = 63
 };
 
 static void CTIMER0_init(void) {

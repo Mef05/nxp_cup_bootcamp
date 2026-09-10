@@ -13,7 +13,7 @@
 #define STEERING_OFFSET 13
 
 // Startup delay
-#define STARTUP_DELAY_SECONDS 7
+#define STARTUP_DELAY_SECONDS 4
 
 // Wheel speeds
 #define SPEED_RIGHT 40

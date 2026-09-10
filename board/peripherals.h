@@ -49,13 +49,13 @@ extern "C" {
 /* Definition of peripheral ID */
 #define CTIMER0_PERIPHERAL CTIMER0
 /* Timer tick frequency in Hz (input frequency of the timer) */
-#define CTIMER0_TICK_FREQ 150000000UL
+#define CTIMER0_TICK_FREQ 2343750UL
 /* Timer tick period in ns (input period of the timer) */
-#define CTIMER0_TICK_PERIOD 6UL
+#define CTIMER0_TICK_PERIOD 427UL
 /* Definition of PWM period channel. */
 #define CTIMER0_PWM_PERIOD_CH kCTIMER_Match_0
-/* Definition of PWM period (150MHz / 20kHz) */
-#define CTIMER0_PWM_PERIOD 7500
+/* Definition of PWM period */
+#define CTIMER0_PWM_PERIOD 2342
 /* Definition of channel 1 ID */
 #define CTIMER0_PWM_1_CHANNEL kCTIMER_Match_1
 /* Definition of channel 1 duty */
