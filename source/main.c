@@ -214,12 +214,9 @@ int main(void) {
             if (do_print)
                 PRINTF("LINIE PIERDUTA! Stop.\r\n");
         } else if (frames_lost > 0) {
-            /* Pierdut temporar - incetineste dar pastreaza directia */
+            /* Pierdut temporar - dam cu spatele ca sa regasim linia! */
             Steer(current_steer);
-            float sf = 0.5f;
-            int speed_L = (int)((float)SPEED_LEFT * sf);
-            int speed_R = (int)((float)SPEED_RIGHT * sf);
-            HbridgeSpeed(&g_hbridge, speed_L, speed_R);
+            HbridgeSpeed(&g_hbridge, -40, -40);
         } else {
             /* Conducere normala cu Diferential Electronic */
             Steer(current_steer);

@@ -49,12 +49,11 @@ void HbridgeSpeed(Hbridge *h, int16_t speed1, int16_t speed2)
      * DIR=0 permite modul "Coast" (foarte fin). DIR=1 folosește "Brake" (vibrează).
      * Pentru ca mersul înainte să fie fin, setăm DIR=0 pentru Forward.
      * UTILIZATORUL TREBUIE SĂ INVERSEZE CELE 2 FIRE ALE FIECĂRUI MOTOR (A și B).
-     */
-    uint8_t dir1 = (speed1 >= 0) ? 1U : 0U;
+    uint8_t dir1 = (speed1 >= 0) ? 0U : 1U;
     uint8_t p1   = (uint8_t)((speed1 >= 0) ? speed1 : -speed1);
     uint8_t duty1 = (dir1 == 0U) ? p1 : (100U - p1);
 
-    uint8_t dir2 = (speed2 >= 0) ? 1U : 0U;
+    uint8_t dir2 = (speed2 >= 0) ? 0U : 1U;
     uint8_t p2   = (uint8_t)((speed2 >= 0) ? speed2 : -speed2);
     uint8_t duty2 = (dir2 == 0U) ? p2 : (100U - p2);
 
