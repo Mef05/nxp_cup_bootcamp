@@ -1,0 +1,23 @@
+# Build directories and outputs
+Debug/
+Release/
+build/
+*.o
+*.obj
+*.axf
+*.map
+*.bin
+*.hex
+*.elf
+*.su
+
+# IDE and tool specific
+.clangd/
+compile_commands.json
+
+# If you use VSCode and don't want to share workspace settings
+# .vscode/
+
+# OS generated files
+.DS_Store
+Thumbs.db
