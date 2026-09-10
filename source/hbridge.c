@@ -30,6 +30,10 @@ void HbridgeInit(Hbridge *h,
 
 void HbridgeSpeed(Hbridge *h, int16_t speed1, int16_t speed2)
 {
+    // Invert speed globally to match user's physical motor polarity
+    speed1 = -speed1;
+    speed2 = -speed2;
+
         // Clamp speed values to valid range [-100, 100]
     if (speed1 > 100) speed1 = 100;
     if (speed1 < -100) speed1 = -100;

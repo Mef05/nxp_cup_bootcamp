@@ -197,16 +197,8 @@ int main(void) {
             current_steer = 0.0f;
             if (do_print)
                 PRINTF("Astept linia...\r\n");
-        } else if (frames_lost >= 120) {
-            /* Linie pierduta de mai mult de 2 secunde - stop total de siguranta */
-            HbridgeBrake(&g_hbridge);
-            Steer(0.0f);
-            current_steer = 0.0f;
-            if (do_print)
-                PRINTF("LINIE PIERDUTA COMPLET! Stop.\r\n");
         } else if (frames_lost > 5) {
-            /* Daca am pierdut-o de mai multe cadre, dam cu spatele serios 
-               ca sa ne intoarcem la ea! */
+            /* Daca am pierdut-o de mai multe cadre, dam cu spatele pana o gasim! */
             Steer(current_steer);
             HbridgeSpeed(&g_hbridge, -85, -85);
         } else if (frames_lost > 0) {
