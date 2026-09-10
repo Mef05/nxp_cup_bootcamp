@@ -70,7 +70,6 @@ int main(void) {
             /* Eroare I2C - oprire de urgenta */
             if (do_print)
                 PRINTF("EROARE I2C PIXY2!\r\n");
-            HbridgeBrake(&g_hbridge);
             continue;
         }
 
@@ -198,13 +197,17 @@ int main(void) {
             current_steer = 0.0f;
             if (do_print)
                 PRINTF("Astept linia...\r\n");
-        } else if (frames_lost >= 10) {
+        } else if (frames_lost >= 15) {
             /* Linie pierduta de prea mult timp - stop total */
             HbridgeBrake(&g_hbridge);
             Steer(0.0f);
             current_steer = 0.0f;
             if (do_print)
                 PRINTF("LINIE PIERDUTA! Stop.\r\n");
+        } else if (frames_lost > 5) {
+            /* Daca am pierdut-o de mai multe cadre, dam cu spatele serios! */
+            Steer(current_steer);
+            HbridgeSpeed(&g_hbridge, -85, -85);
         } else if (frames_lost > 0) {
             /* Pierdut temporar - incetineste dar pastreaza directia */
             Steer(current_steer);
