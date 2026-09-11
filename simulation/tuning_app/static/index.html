@@ -366,7 +366,7 @@
         const r = await fetch('/simulate', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({frames: 300})
+            body: JSON.stringify({frames: 0})
         });
         const m = await r.json();
         document.getElementById('m-score').innerText = m.score ? m.score.toFixed(2) : '-';

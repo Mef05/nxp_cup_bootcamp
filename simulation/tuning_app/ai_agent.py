@@ -20,7 +20,7 @@ def run_simulation_tool(config_overrides: dict) -> dict:
     req = urllib.request.Request("http://127.0.0.1:8000/config", data=json.dumps(config_overrides).encode('utf-8'), headers={'Content-Type': 'application/json'})
     urllib.request.urlopen(req)
     # Then simulate
-    req = urllib.request.Request("http://127.0.0.1:8000/simulate", data=json.dumps({"frames": 300}).encode('utf-8'), headers={'Content-Type': 'application/json'})
+    req = urllib.request.Request("http://127.0.0.1:8000/simulate", data=json.dumps({"frames": 0}).encode('utf-8'), headers={'Content-Type': 'application/json'})
     with urllib.request.urlopen(req) as response:
         return json.loads(response.read().decode('utf-8'))
 

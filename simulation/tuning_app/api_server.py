@@ -99,7 +99,8 @@ class SimulateRequest(BaseModel):
 
 @app.post("/simulate")
 async def simulate(req: SimulateRequest = None):
-    frames = req.frames if req else 300
+    # Default to 1200 frames (20 seconds) if not specified or 0
+    max_frames = req.frames if (req and req.frames > 0) else 1200
     
     # We must patch the config before creating runner to ensure everything matches
     full_config = get_full_config()
@@ -109,11 +110,18 @@ async def simulate(req: SimulateRequest = None):
     sum_cte = 0.0
     time_reversed = 0
     off_track = False
+    lap_completed = False
     
     # Track width is 0.55m -> half width is 0.275m
     TRACK_HALF_WIDTH = 0.275
     
-    for i in range(frames):
+    start_x = sim.car.x
+    start_y = sim.car.y
+    has_left_start_area = False
+    
+    actual_frames = 0
+    for i in range(max_frames):
+        actual_frames += 1
         sim.step()
         
         # calculate metrics
@@ -129,6 +137,18 @@ async def simulate(req: SimulateRequest = None):
         if sim.last_debug.get('speed_L', 0) < 0 or sim.last_debug.get('speed_R', 0) < 0:
             time_reversed += 1
             
+        # check lap completion
+        dist_from_start = math.hypot(sim.car.x - start_x, sim.car.y - start_y)
+        if dist_from_start > 1.5:
+            has_left_start_area = True
+        elif has_left_start_area and dist_from_start < 0.3:
+            lap_completed = True
+            break
+            
+        # check failure
+        if off_track:
+            break
+            
         # broadcast via WS
         ws_data = {
             "frame": sim.frame,
@@ -143,19 +163,20 @@ async def simulate(req: SimulateRequest = None):
         # Yield to event loop so WS can send
         await asyncio.sleep(0.001)
         
-    mean_cte = sum_cte / frames if frames > 0 else 0
-    score = 100.0 - (2.0 * mean_cte) - (3.0 * max_cte) - (5.0 * time_reversed) - (50.0 if off_track else 0.0)
+    mean_cte = sum_cte / actual_frames if actual_frames > 0 else 0
+    score = 100.0 - (2.0 * mean_cte) - (3.0 * max_cte) - (5.0 * time_reversed) - (50.0 if off_track else 0.0) + (20.0 if lap_completed else 0.0)
     
     global LATEST_METRICS
     LATEST_METRICS = {
-        "frames": frames,
+        "frames": actual_frames,
         "finished": True,
         "off_track": off_track,
-        "max_cte_px": float(max_cte),
-        "mean_cte_px": float(mean_cte),
-        "oscillation_score": 0.8,
+        "max_cte_px": max_cte,
+        "mean_cte_px": mean_cte,
+        "oscillation_score": 0.0,
         "time_reversed": time_reversed,
-        "lap_completed": False,
-        "score": float(score)
+        "lap_completed": lap_completed,
+        "score": score
     }
+    
     return LATEST_METRICS
