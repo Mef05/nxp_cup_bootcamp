@@ -238,24 +238,31 @@ int main(void) {
         } else if (frames_lost > 0) {
             /* Pierdut temporar - incetineste dar pastreaza directia */
             Steer(current_steer);
-            float sf = 0.5f;
-            int speed_L = (int)((float)SPEED_LEFT * sf);
-            int speed_R = (int)((float)SPEED_RIGHT * sf);
+            int speed_L = (int)((float)SPEED_MAX * 0.5f);
+            int speed_R = (int)((float)SPEED_MAX * 0.5f);
             HbridgeSpeed(&g_hbridge, speed_L, speed_R);
         } else {
-            /* Conducere normala cu Diferential Electronic */
+            /* Conducere normala cu Dynamic Speed si Diferential Electronic */
             Steer(current_steer);
             
-            int speed_L = SPEED_LEFT;
-            int speed_R = SPEED_RIGHT;
+            // Calculam viteza de baza in functie de cat de mult viram.
+            // abs(current_steer) mare -> curba -> franam spre SPEED_MIN.
+            float abs_steer = (current_steer < 0.0f) ? -current_steer : current_steer;
+            float brake_factor = abs_steer / BRAKE_STEER_THRESHOLD;
+            if (brake_factor > 1.0f) brake_factor = 1.0f;
+            
+            int base_speed = SPEED_MAX - (int)((SPEED_MAX - SPEED_MIN) * brake_factor);
+            
+            int speed_L = base_speed;
+            int speed_R = base_speed;
 
             // Diferential Electronic: reducem viteza rotii interioare pe curba
             if (current_steer > 0.0f) {
                 float diff_factor = 1.0f - (current_steer * 0.01f * DIFFERENTIAL_FACTOR);
-                speed_R = (int)((float)SPEED_RIGHT * diff_factor);
+                speed_R = (int)((float)base_speed * diff_factor);
             } else if (current_steer < 0.0f) {
                 float diff_factor = 1.0f - (-current_steer * 0.01f * DIFFERENTIAL_FACTOR);
-                speed_L = (int)((float)SPEED_LEFT * diff_factor);
+                speed_L = (int)((float)base_speed * diff_factor);
             }
 
             HbridgeSpeed(&g_hbridge, speed_L, speed_R);

@@ -47,9 +47,10 @@ STEERING_LIMIT_LEFT: int = _c_config.get("STEERING_LIMIT_LEFT", -80)
 # Servo mechanical center offset (maps to SERVO_CENTER_OFFSET in servo.h)
 STEERING_OFFSET: int = 13  # degrees; also used as SERVO_CENTER_OFFSET
 
-# Wheel speed duty cycles (0-100 scale, as sent to HbridgeSpeed)
-SPEED_RIGHT: int = _c_config.get("SPEED_RIGHT", 90)
-SPEED_LEFT: int = _c_config.get("SPEED_LEFT", 90)
+# Dynamic Speed Control
+SPEED_MAX: int = _c_config.get("SPEED_MAX", 100)
+SPEED_MIN: int = _c_config.get("SPEED_MIN", 75)
+BRAKE_STEER_THRESHOLD: float = _c_config.get("BRAKE_STEER_THRESHOLD", 35.0)
 
 # Electronic differential: fraction of inner-wheel speed reduction per % steer
 DIFFERENTIAL_FACTOR: float = _c_config.get("DIFFERENTIAL_FACTOR", 0.3)

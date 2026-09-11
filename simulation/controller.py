@@ -317,24 +317,29 @@ class NXPController:
 
         elif self.frames_lost > 0:
             # main.c lines 232-238: coast at 50% speed, keep last steer
-            sf = 0.5
-            speed_L = int(float(SPEED_LEFT) * sf)
-            speed_R = int(float(SPEED_RIGHT) * sf)
+            speed_L = int(float(config.SPEED_MAX) * 0.5)
+            speed_R = int(float(config.SPEED_MAX) * 0.5)
 
         else:
-            # main.c lines 239-258: normal driving with electronic differential
-            speed_L = SPEED_LEFT
-            speed_R = SPEED_RIGHT
+            # main.c lines 239-258: normal driving with dynamic speed and diff
+            abs_steer = abs(self.current_steer)
+            brake_factor = abs_steer / config.BRAKE_STEER_THRESHOLD
+            if brake_factor > 1.0:
+                brake_factor = 1.0
+            
+            base_speed = config.SPEED_MAX - int((config.SPEED_MAX - config.SPEED_MIN) * brake_factor)
+            speed_L = base_speed
+            speed_R = base_speed
 
             # Electronic differential  (main.c lines 247-253)
             if self.current_steer > 0.0:
                 # Turning right: reduce right (inner) wheel speed
                 diff_factor = 1.0 - (self.current_steer * 0.01 * DIFFERENTIAL_FACTOR)
-                speed_R = int(float(SPEED_RIGHT) * diff_factor)
+                speed_R = int(float(base_speed) * diff_factor)
             elif self.current_steer < 0.0:
                 # Turning left: reduce left (inner) wheel speed
                 diff_factor = 1.0 - (-self.current_steer * 0.01 * DIFFERENTIAL_FACTOR)
-                speed_L = int(float(SPEED_LEFT) * diff_factor)
+                speed_L = int(float(base_speed) * diff_factor)
 
         debug["speed_L"] = speed_L
         debug["speed_R"] = speed_R
