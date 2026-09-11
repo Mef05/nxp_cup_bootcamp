@@ -46,9 +46,9 @@ class Curve:
 TRACK_SEGMENTS = [
     Straight(1.5),
     Curve(0.60, 90),   # left 90 deg
-    Straight(1.0),
+    Straight(1.5657),
     Curve(0.60, 90),   # left 90 deg
-    Straight(1.5),
+    Straight(1.2657),
     Curve(0.60, 90),   # left 90 deg
     Straight(0.6),
     Curve(0.40, -45),  # chicane right

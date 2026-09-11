@@ -46,6 +46,7 @@ from config import (
     PIXY_H,
     PIXY_W,
     PRINT_EVERY_N,
+    PROCESSING_DELAY_FRAMES,
     SPEED_LEFT,
     SPEED_RIGHT,
     TRACK_WIDTH,
@@ -112,6 +113,27 @@ class SimulationRunner:
         self.speed_idx: int = 2  # default 1x
         self.frame: int = 0
 
+        # --- Issue 2: reverse-committed stabilisation (simulation-level only) ---
+        # Once frames_lost > 5 triggers reverse mode, we stay in reverse for at
+        # least REVERSE_COMMIT_FRAMES before allowing the controller to see new
+        # vectors again.  This prevents the real-hardware oscillation loop where
+        # reversing briefly brings the track into view, resetting frames_lost,
+        # then driving forward again and losing it immediately.
+        # NOTE: controller.py is NOT modified - it still mirrors main.c exactly.
+        self.REVERSE_COMMIT_FRAMES: int = 60
+        self.reverse_committed: int = 0   # countdown; >0 = suppress vectors
+
+        # --- Issue 3: processing delay buffer ---
+        # Circular buffer holding the last (PROCESSING_DELAY_FRAMES + 1) camera
+        # frames.  The controller receives vectors from PROCESSING_DELAY_FRAMES
+        # ago, simulating the I2C acquisition + MCU processing latency of the
+        # real MCXN947 board (~16 ms + 1-2 ms = ~1-2 camera frames).
+        delay = max(0, PROCESSING_DELAY_FRAMES)
+        # Pre-fill with empty frames so the deque is immediately indexable
+        self.camera_frame_buffer: deque = deque(
+            [[] for _ in range(delay + 1)], maxlen=delay + 1
+        )
+
         # Time-series history
         self.hist_steer: Deque[float] = deque(maxlen=HISTORY_LEN)
         self.hist_speed: Deque[float] = deque(maxlen=HISTORY_LEN)
@@ -122,7 +144,7 @@ class SimulationRunner:
         self.path_x: Deque[float] = deque(maxlen=500)
         self.path_y: Deque[float] = deque(maxlen=500)
 
-        # Latest vectors for camera view
+        # Latest vectors for camera view (the *current* frame, not delayed)
         self.last_vectors: List[Tuple[int, int, int, int]] = []
         self.last_debug: dict = {}
 
@@ -130,6 +152,11 @@ class SimulationRunner:
         self.car.reset(_x0, _y0, _theta0)
         self.controller.reset()
         self.frame = 0
+        self.reverse_committed = 0
+        delay = max(0, PROCESSING_DELAY_FRAMES)
+        self.camera_frame_buffer = deque(
+            [[] for _ in range(delay + 1)], maxlen=delay + 1
+        )
         self.hist_steer.clear()
         self.hist_speed.clear()
         self.hist_cte.clear()
@@ -148,8 +175,22 @@ class SimulationRunner:
         )
         self.last_vectors = vectors
 
+        # --- Issue 3: processing delay buffer ---
+        self.camera_frame_buffer.append(vectors)
+        delayed_vectors = self.camera_frame_buffer[0]
+
+        # --- Issue 2: reverse-committed stabilisation ---
+        if self.controller.frames_lost > 5 and self.reverse_committed == 0:
+            self.reverse_committed = self.REVERSE_COMMIT_FRAMES
+            
+        if self.reverse_committed > 0:
+            self.reverse_committed -= 1
+            # Suppress vectors to force frames_lost to keep incrementing
+            # and keep the controller in reverse mode.
+            delayed_vectors = []
+
         # Run controller (mirrors main.c loop body)
-        steer_out, speed_L, speed_R, debug = self.controller.update(vectors)
+        steer_out, speed_L, speed_R, debug = self.controller.update(delayed_vectors)
         self.last_debug = debug
 
         # Average speed for bicycle model (use mean of L+R)

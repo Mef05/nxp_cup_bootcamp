@@ -97,7 +97,7 @@ WHEELBASE: float = 0.18  # metres
 MAX_SPEED_MS: float = 1.5  # metres per second
 
 # Camera mounting height above ground - ASSUMED
-CAMERA_HEIGHT: float = 0.12  # metres
+CAMERA_HEIGHT: float = 0.18  # metres
 
 # Camera tilt angle below horizontal - ASSUMED
 CAMERA_ANGLE_DEG: float = 15.0  # degrees
@@ -110,3 +110,15 @@ CAMERA_FOV_V_DEG: float = 47.0  # degrees
 
 # NXP Cup standard track half-width - ASSUMED (full width 0.55 m)
 TRACK_WIDTH: float = 0.55  # metres
+
+# ---------------------------------------------------------------------------
+# Simulation-only parameters (no C equivalent)
+# ---------------------------------------------------------------------------
+
+# Number of camera frames of processing delay to simulate.
+# On the real MCXN947 board:
+#   - Pixy2 I2C frame acquisition: ~16 ms (one full camera frame at ~60 fps)
+#   - MCU PD controller + HbridgeSpeed update: ~1-2 ms
+#   Total effective delay: ~1-2 camera frames.
+# Set to 0 to disable latency simulation (ideal, zero-delay system).
+PROCESSING_DELAY_FRAMES: int = 2

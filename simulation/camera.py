@@ -137,7 +137,7 @@ class Pixy2Camera:
 
         # Project to normalised image coords
         nx = cam_x / cam_z
-        ny = -cam_y / cam_z   # flip: image Y positive = downward
+        ny = cam_y / cam_z   # image Y positive = downward
 
         # Convert to pixel coords
         px = nx * self._fx + PIXY_W / 2.0
