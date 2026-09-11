@@ -19,7 +19,7 @@
 #define SPEED_MIN 75
 // The steering command magnitude (0-100) at which speed drops to SPEED_MIN.
 // Lower value = brakes earlier and harder before curves.
-#define BRAKE_STEER_THRESHOLD 35.0f
+#define BRAKE_STEER_THRESHOLD 20.0f
 
 // Electronic differential: fraction of inner-wheel speed reduction per % steer
 // 0.0 = no diff, 1.0 = stops inner wheel completely on max steer
