@@ -45,7 +45,6 @@ int main(void) {
     int frame_count = 0;
 
     /* ===== PARAMETRI DE TUNING ===== */
-    const float KP = STEER_KP;
     const float KD = STEER_KD;
     const float WEIGHT_CTE = 1.0f; /* Cat de mult conteaza pozitia laterala */
     const float WEIGHT_HEADING = HEADING_FACTOR; /* Preluat din Config.h */
@@ -202,7 +201,11 @@ int main(void) {
         }
 
         /* ===== PD CONTROLLER ===== */
-        float steer_cmd = (KP * error) + (KD * (error - last_error));
+        /* Linear term: KP * error (proportional to offset from center)     */
+        /* Quadratic term: KP_Q * error * |error| (agresiv la mijloc curbei */
+        /* La cte=5 contribuie putin, la cte=20 contribuie mult             */
+        float abs_error = (error < 0.0f) ? -error : error;
+        float steer_cmd = (STEER_KP * error) + (STEER_KP_Q * error * abs_error) + (KD * (error - last_error));
         last_error = error;
 
         if (steer_cmd > 100.0f)

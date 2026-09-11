@@ -31,7 +31,12 @@
 #define HEADING_FACTOR 0.0f
 
 // Steering PD Controller Tuning
-#define STEER_KP 5.0f
+#define STEER_KP 4.0f
+// Quadratic gain: adds extra steering proportional to CTE^2
+// 0.0f = pure linear (no extra mid-curve aggression)
+// 0.1f = moderate (recommended starting point)
+// 0.3f = very aggressive mid-curve
+#define STEER_KP_Q 0.15f
 #define STEER_KD 0.5f
 
 // Steering Smoothing (0.0f = no smoothing/instant, 0.9f = very slow/smooth)
