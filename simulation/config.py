@@ -71,8 +71,11 @@ STEERING_ALPHA: float = _c_config.get("STEERING_ALPHA", 0.1)
 # Minimum Y coordinate (in Pixy2 pixels) that a vector's bottom point must reach
 MIN_BOT_Y: float = _c_config.get("MIN_BOT_Y", 10.0)
 
+# Minimum vertical span in pixels
+MIN_DY: float = _c_config.get("MIN_DY", 6.0)
+
 # Minimum steering scale applied when a line is at maximum distance (MIN_BOT_Y).
-MIN_STEER_SCALE: float = _c_config.get("MIN_STEER_SCALE", 0.2)
+MIN_STEER_SCALE: float = _c_config.get("MIN_STEER_SCALE", 0.4)
 
 # ---------------------------------------------------------------------------
 # From source/main.c - hard-coded constants in the control loop
@@ -87,9 +90,6 @@ PIXY_H: int = 51
 
 # Image centre X used by the controller
 IMAGE_CENTER_X: float = 39.0
-
-# Minimum Y-span of a vector for it to pass the "not too horizontal" filter
-MIN_DY: float = 8.0
 
 # Approximate track width in pixels used when only one boundary is visible
 TRACK_WIDTH_PX: float = 45.0

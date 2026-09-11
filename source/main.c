@@ -51,7 +51,6 @@ int main(void) {
 
     const float IMAGE_CENTER_X =
         39.0f;                    /* Centrul imaginii Pixy2 Line Tracking */
-    const float MIN_DY = 8.0f;    /* Ignora vectori mai plati de 8px pe Y */
     const int PRINT_EVERY_N = 30; /* Printeaza log la fiecare 30 cadre */
 
     /* ===== BUCLA PRINCIPALA ===== */

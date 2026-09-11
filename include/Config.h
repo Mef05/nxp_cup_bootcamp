@@ -18,7 +18,7 @@
 
 // Electronic differential: fraction of inner-wheel speed reduction per % steer
 // 0.0 = no diff, 1.0 = stops inner wheel completely on max steer
-#define DIFFERENTIAL_FACTOR 0.15f
+#define DIFFERENTIAL_FACTOR 0.18f
 
 // Lookahead blending factor between bottom (close) and top (far) of detected line
 // 0.0 = react to closest point only (turns LATE)
@@ -42,15 +42,18 @@
 #define STEERING_ALPHA 0.1f
 
 // Minimum Y coordinate (in Pixy2 pixels) that a vector's bottom point must
-// reach before it is considered for steering.
 // Pixy2: Y=0 = top of image (far), Y=51 = bottom (close to car).
 // Higher value -> car reacts only to very close lines (turns LATER).
 // Lower value  -> car reacts to distant lines (turns EARLIER).
 #define MIN_BOT_Y 10.0f
 
-// Minimum steering scale applied when a curve is at maximum distance
-// (MIN_BOT_Y) 0.0f = No steering at all for far curves 1.0f = Full steering
-// regardless of distance
+// Minimum vertical span (dy) in pixels for a vector to be accepted.
+// Filters out noise and horizontal crossing markers.
+#define MIN_DY 6.0f
+
+// Minimum steering scale applied when a curve is at maximum distance (MIN_BOT_Y)
+// 0.0f = No steering at all for far curves
+// 1.0f = Full steering regardless of distance
 #define MIN_STEER_SCALE 0.4f
 
 #endif
