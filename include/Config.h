@@ -24,7 +24,7 @@
 // 0.0f = Only// Lookahead blending factor between bottom (close) and top (far) of detected line
 // 0.0 = react to closest point only (turns LATE)
 // 1.0 = react to furthest point only (turns EARLY)
-#define LOOKAHEAD_FACTOR 0.65f
+#define LOOKAHEAD_FACTOR 0.72f
 
 // Heading anticipation weight added to the error signal
 // 0.0 = only lateral position error (CTE) - recommended
@@ -36,7 +36,7 @@
 // 0.0f = pure linear (no extra mid-curve aggression)
 // 0.1f = moderate (recommended starting point)
 // 0.3f = very aggressive mid-curve
-#define STEER_KP_Q 0.15f
+#define STEER_KP_Q 0.20f
 #define STEER_KD 0.8f
 
 // Steering Smoothing (0.0f = no smoothing/instant, 0.9f = very slow/smooth)
