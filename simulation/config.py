@@ -9,59 +9,70 @@ Physical/camera constants marked ASSUMED are estimates for simulation
 purposes and are NOT from the hardware source files.
 """
 
+import os
+import re
+
 # ---------------------------------------------------------------------------
-# From include/Config.h - keep in sync!
+# Dynamically parse include/Config.h so simulation is always in sync!
 # ---------------------------------------------------------------------------
+
+def _parse_config_h():
+    config_path = os.path.join(os.path.dirname(__file__), "..", "include", "Config.h")
+    parsed = {}
+    if os.path.exists(config_path):
+        with open(config_path, "r") as f:
+            for line in f:
+                # Match `#define NAME VALUE` (handles floats with 'f', integers, etc.)
+                match = re.match(r'^\s*#define\s+([A-Za-z0-9_]+)\s+([0-9\.\-]+)f?', line)
+                if match:
+                    name = match.group(1)
+                    val_str = match.group(2)
+                    # Convert to float or int
+                    if '.' in val_str:
+                        parsed[name] = float(val_str)
+                    else:
+                        parsed[name] = int(val_str)
+    return parsed
+
+_c_config = _parse_config_h()
 
 # Steering PWM proportional factors (used for servo mapping in hardware)
-STEERING_P_RIGHT: int = 50
-STEERING_P_LEFT: int = 50
+STEERING_P_RIGHT: int = _c_config.get("STEERING_P_RIGHT", 50)
+STEERING_P_LEFT: int = _c_config.get("STEERING_P_LEFT", 50)
 
 # Physical steering limits (logical -100..+100 maps to these degrees)
-STEERING_LIMIT_RIGHT: int = 80   # degrees, positive = right
-STEERING_LIMIT_LEFT: int = -80   # degrees, negative = left
+STEERING_LIMIT_RIGHT: int = _c_config.get("STEERING_LIMIT_RIGHT", 80)
+STEERING_LIMIT_LEFT: int = _c_config.get("STEERING_LIMIT_LEFT", -80)
 
 # Servo mechanical center offset (maps to SERVO_CENTER_OFFSET in servo.h)
 STEERING_OFFSET: int = 13  # degrees; also used as SERVO_CENTER_OFFSET
 
 # Wheel speed duty cycles (0-100 scale, as sent to HbridgeSpeed)
-SPEED_RIGHT: int = 90
-SPEED_LEFT: int = 90
+SPEED_RIGHT: int = _c_config.get("SPEED_RIGHT", 90)
+SPEED_LEFT: int = _c_config.get("SPEED_LEFT", 90)
 
 # Electronic differential: fraction of inner-wheel speed reduction per % steer
-# 0.0 = no diff, 1.0 = stops inner wheel completely on max steer
-DIFFERENTIAL_FACTOR: float = 0.3
+DIFFERENTIAL_FACTOR: float = _c_config.get("DIFFERENTIAL_FACTOR", 0.3)
 
 # Lookahead blending factor between bottom (close) and top (far) of detected line
-# 0.0 = react to closest point only (turns LATE)
-# 1.0 = react to furthest point only (turns EARLY)
-LOOKAHEAD_FACTOR: float = 0.2
+LOOKAHEAD_FACTOR: float = _c_config.get("LOOKAHEAD_FACTOR", 0.5)
 
 # Heading anticipation weight added to the error signal
-# 0.0 = only lateral position error (CTE) - recommended
-# >0  = also weight line angle (can cause early turns due to perspective)
-HEADING_FACTOR: float = 0.0
+HEADING_FACTOR: float = _c_config.get("HEADING_FACTOR", 0.0)
 
 # PD steering controller gains
-STEER_KP: float = 4.0     # proportional gain
-STEER_KP_Q: float = 0.15  # quadratic gain (extra aggression at large errors)
-STEER_KD: float = 0.5     # derivative gain
+STEER_KP: float = _c_config.get("STEER_KP", 5.0)
+STEER_KP_Q: float = _c_config.get("STEER_KP_Q", 0.25)
+STEER_KD: float = _c_config.get("STEER_KD", 0.8)
 
 # Exponential smoothing on the steering output
-# 0.0 = instant response, 0.9 = very sluggish
-STEERING_ALPHA: float = 0.5
+STEERING_ALPHA: float = _c_config.get("STEERING_ALPHA", 0.1)
 
-# Minimum Y coordinate (in Pixy2 pixels) that a vector's bottom point must
-# reach before it is considered for steering.
-# Pixy2: Y=0 = top of image (far), Y=51 = bottom (close to car).
-# Higher value -> car reacts only to very close lines (turns LATER).
-# Lower value  -> car reacts to distant lines (turns EARLIER).
-MIN_BOT_Y: float = 30.0
+# Minimum Y coordinate (in Pixy2 pixels) that a vector's bottom point must reach
+MIN_BOT_Y: float = _c_config.get("MIN_BOT_Y", 10.0)
 
 # Minimum steering scale applied when a line is at maximum distance (MIN_BOT_Y).
-# 0.0 = no steering for distant curves
-# 1.0 = full steering regardless of distance (disables proximity scaling)
-MIN_STEER_SCALE: float = 0.2
+MIN_STEER_SCALE: float = _c_config.get("MIN_STEER_SCALE", 0.2)
 
 # ---------------------------------------------------------------------------
 # From source/main.c - hard-coded constants in the control loop

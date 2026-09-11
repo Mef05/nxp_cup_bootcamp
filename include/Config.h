@@ -24,7 +24,7 @@
 // 0.0f = Only// Lookahead blending factor between bottom (close) and top (far) of detected line
 // 0.0 = react to closest point only (turns LATE)
 // 1.0 = react to furthest point only (turns EARLY)
-#define LOOKAHEAD_FACTOR 0.5f
+#define LOOKAHEAD_FACTOR 0.8f
 
 // Heading anticipation weight added to the error signal
 // 0.0 = only lateral position error (CTE) - recommended
@@ -51,7 +51,7 @@
 
 // Minimum steering scale applied when a curve is at maximum distance (MIN_BOT_Y)
 // 0.0f = No steering at all for far curves
-// 1.0f = Full steering regardless of distance (disables proximity scaling)
-#define MIN_STEER_SCALE 0.2f
+// 1.0f = Full steering regardless of distance
+#define MIN_STEER_SCALE 0.4f
 
 #endif
