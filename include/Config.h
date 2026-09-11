@@ -13,12 +13,11 @@
 #define STEERING_OFFSET 13
 
 // Wheel speeds
-#define SPEED_RIGHT 100
-#define SPEED_LEFT 100
+#define SPEED_RIGHT 90
+#define SPEED_LEFT 90
 
 // Electronic Differential Factor
-// 0.0f = No differential, 1.0f = Strong differential (stops inner wheel on
-// tight turns)
+// 0.0f = No differential, 1.0f = Strong differential (stops inner wheel on tight turns)
 #define DIFFERENTIAL_FACTOR 0.3f
 
 // Lookahead factor for line tracking
@@ -27,16 +26,16 @@
 #define LOOKAHEAD_FACTOR 0.2f
 
 // Heading anticipation factor
-// 0.0f = Car only cares about its position on the track
-// 1.0f = Car reacts strongly to the angle of the line ahead (turns early)
-#define HEADING_FACTOR 1.0f
+// 0.0f = Car only cares about its LATERAL position (CTE) - RECOMMENDED
+// >0.0f = Car also steers based on line ANGLE - causes early turning due to perspective!
+#define HEADING_FACTOR 0.0f
 
 // Steering PD Controller Tuning
-#define STEER_KP 8.0f
+#define STEER_KP 5.0f
 #define STEER_KD 0.5f
 
 // Steering Smoothing (0.0f = no smoothing/instant, 0.9f = very slow/smooth)
-#define STEERING_ALPHA 0.4f
+#define STEERING_ALPHA 0.5f
 
 // Minimum Y of a vector's bottom point to be considered for steering
 // Pixy2 image is 79x51px. Y=0=top(far), Y=51=bottom(close to car).
@@ -45,9 +44,8 @@
 #define MIN_BOT_Y 30.0f
 
 // Minimum steering scale applied when a curve is at maximum distance (MIN_BOT_Y)
-// 0.0f = No steering at all for far curves (fully gentle approach)
+// 0.0f = No steering at all for far curves
 // 1.0f = Full steering regardless of distance (disables proximity scaling)
-// Recommended: 0.2f - starts gently and ramps up as car approaches curve
 #define MIN_STEER_SCALE 0.2f
 
 #endif
