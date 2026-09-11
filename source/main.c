@@ -54,6 +54,8 @@ int main(void) {
     const int PRINT_EVERY_N = 30; /* Printeaza log la fiecare 30 cadre */
 
     /* ===== BUCLA PRINCIPALA ===== */
+    float last_valid_error = 0.0f;
+    
     while (1) {
         frame_count++;
         bool do_print = (frame_count % PRINT_EVERY_N == 0);
@@ -187,6 +189,7 @@ int main(void) {
                 float steer_scale = MIN_STEER_SCALE + (1.0f - MIN_STEER_SCALE) * proximity;
 
                 error = steer_scale * ((WEIGHT_CTE * cte) + (WEIGHT_HEADING * heading));
+                last_valid_error = error; // save it
 
                 if (do_print)
                     PRINTF("%s cbot:%d cte:%d hdg:%d prox:%d err:%d\r\n",
@@ -195,9 +198,12 @@ int main(void) {
                                : (have_left ? "L  " : "  R"),
                            (int)center_bot, (int)cte, (int)heading,
                            (int)(proximity * 100.0f), (int)error);
+            } else {
+                error = last_valid_error; // restore last good error
             }
         } else {
             frames_lost++;
+            error = last_valid_error; // restore last good error
         }
 
         /* ===== PD CONTROLLER ===== */

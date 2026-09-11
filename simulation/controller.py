@@ -69,6 +69,7 @@ class NXPController:
     def reset(self) -> None:
         # main.c variable initialisations (lines 41-45)
         self.last_error: float = 0.0
+        self.last_valid_error: float = 0.0
         self.frames_lost: int = 0
         self.current_steer: float = 0.0
         self.line_detected_once: bool = False
@@ -243,7 +244,9 @@ class NXPController:
                 steer_scale = MIN_STEER_SCALE + (1.0 - MIN_STEER_SCALE) * proximity
 
                 # Combined error  (main.c line 189)
+                # Combined error  (main.c line 189)
                 error = steer_scale * ((_WEIGHT_CTE * cte) + (_WEIGHT_HEADING * heading))
+                self.last_valid_error = error
 
                 # Populate debug
                 debug["have_left"] = have_left
@@ -256,10 +259,13 @@ class NXPController:
                 debug["proximity"] = proximity
                 debug["steer_scale"] = steer_scale
                 debug["error"] = error
+            else:
+                error = self.last_valid_error
 
         else:
             # num_vectors == 0  (main.c line 200)
             self.frames_lost += 1
+            error = self.last_valid_error
 
         # ------------------------------------------------------------------
         # PD controller  (main.c lines 207-209)
