@@ -106,14 +106,20 @@ int main(void) {
 
                 /* Determinam punctul de jos (aproape de masina, Y mare) si cel
                  * de sus */
-                float bot_x, top_x;
+                float bot_x, bot_y, top_x;
                 if (vy0 > vy1) {
-                    bot_x = vx0;
+                    bot_x = vx0; bot_y = vy0;
                     top_x = vx1;
                 } else {
-                    bot_x = vx1;
+                    bot_x = vx1; bot_y = vy1;
                     top_x = vx0;
                 }
+
+                /* Ignoram vectorii care nu ajung suficient de jos in imagine
+                 * (prea departe de masina). In Pixy2: Y=0=sus(departe),
+                 * Y=51=jos(aproape). MIN_BOT_Y din Config.h filtreaza asta. */
+                if (bot_y < MIN_BOT_Y)
+                    continue;
 
                 if (bot_x < IMAGE_CENTER_X) {
                     float dist = IMAGE_CENTER_X - bot_x;
