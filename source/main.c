@@ -75,8 +75,8 @@ int main(void) {
         if (num_vectors > 0) {
             line_detected_once = true;
 
-            /* Dump RAW pentru calibrare (primele ~5 secunde) */
-            if (frame_count < 300 && do_print) {
+            /* Dump RAW PERMANENT - ca sa vedem bot_y real pentru proximity tuning */
+            if (do_print) {
                 for (size_t i = 0; i < num_vectors; i++) {
                     PRINTF("RAW[%d]: (%d,%d)->(%d,%d)\r\n", (int)i,
                            (int)vectors[i * 4 + 0], (int)vectors[i * 4 + 1],
