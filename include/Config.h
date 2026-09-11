@@ -12,13 +12,13 @@
 // Steering angle offset
 #define STEERING_OFFSET 13
 
-// Wheel speeds
-#define SPEED_RIGHT 90
-#define SPEED_LEFT 90
+// Basic Movement
+#define SPEED_RIGHT 80
+#define SPEED_LEFT 80
 
 // Electronic differential: fraction of inner-wheel speed reduction per % steer
 // 0.0 = no diff, 1.0 = stops inner wheel completely on max steer
-#define DIFFERENTIAL_FACTOR 0.18f
+#define DIFFERENTIAL_FACTOR 0.05f
 
 // Lookahead blending factor between bottom (close) and top (far) of detected line
 // 0.0 = react to closest point only (turns LATE)
@@ -30,13 +30,13 @@
 #define HEADING_FACTOR 0.0f
 
 // Steering PD Controller Tuning
-#define STEER_KP 5.0f
+#define STEER_KP 3.5f
 // Quadratic gain: adds extra steering proportional to CTE^2
 // 0.0f = pure linear (no extra mid-curve aggression)
 // 0.1f = moderate (recommended starting point)
 // 0.3f = very aggressive mid-curve
-#define STEER_KP_Q 0.30f
-#define STEER_KD 1.0f
+#define STEER_KP_Q 0.10f
+#define STEER_KD 0.7f
 
 // Steering Smoothing (0.0f = no smoothing/instant, 0.9f = very slow/smooth)
 #define STEERING_ALPHA 0.1f
