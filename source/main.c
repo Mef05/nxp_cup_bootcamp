@@ -161,7 +161,10 @@ int main(void) {
             }
 
             if (frames_lost == 0) {
-                float cte = center_bot - IMAGE_CENTER_X;
+                // Determine target point based on lookahead
+                float target_x = center_bot * (1.0f - LOOKAHEAD_FACTOR) + center_top * LOOKAHEAD_FACTOR;
+                
+                float cte = target_x - IMAGE_CENTER_X;
                 float heading = center_top - center_bot;
                 error = (WEIGHT_CTE * cte) + (WEIGHT_HEADING * heading);
 
@@ -217,10 +220,10 @@ int main(void) {
 
             // Diferential Electronic: reducem viteza rotii interioare pe curba
             if (current_steer > 0.0f) {
-                float diff_factor = 1.0f - (current_steer * 0.005f);
+                float diff_factor = 1.0f - (current_steer * 0.01f * DIFFERENTIAL_FACTOR);
                 speed_R = (int)((float)SPEED_RIGHT * diff_factor);
             } else if (current_steer < 0.0f) {
-                float diff_factor = 1.0f - (-current_steer * 0.005f);
+                float diff_factor = 1.0f - (-current_steer * 0.01f * DIFFERENTIAL_FACTOR);
                 speed_L = (int)((float)SPEED_LEFT * diff_factor);
             }
 
