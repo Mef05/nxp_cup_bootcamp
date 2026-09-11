@@ -45,13 +45,10 @@ int main(void) {
     int frame_count = 0;
 
     /* ===== PARAMETRI DE TUNING ===== */
-    const float KP =
-        4.0f; /* Proportional - mult crescut pentru a vira puternic */
-    const float KD = 0.5f;         /* Derivative - oprit */
+    const float KP = STEER_KP;
+    const float KD = STEER_KD;
     const float WEIGHT_CTE = 1.0f; /* Cat de mult conteaza pozitia laterala */
     const float WEIGHT_HEADING = HEADING_FACTOR; /* Preluat din Config.h */
-    const float STEER_ALPHA =
-        0.7f; /* 70% smoothing - tine volanul stabil dar puternic */
 
     const float IMAGE_CENTER_X =
         39.0f;                    /* Centrul imaginii Pixy2 Line Tracking */
@@ -188,9 +185,9 @@ int main(void) {
         if (steer_cmd < -100.0f)
             steer_cmd = -100.0f;
 
-        /* Smoothing exponential (STEER_ALPHA=0 inseamna fara delay) */
+        /* Smoothing exponential (STEERING_ALPHA=0 inseamna fara delay) */
         current_steer =
-            STEER_ALPHA * current_steer + (1.0f - STEER_ALPHA) * steer_cmd;
+            STEERING_ALPHA * current_steer + (1.0f - STEERING_ALPHA) * steer_cmd;
 
         /* ===== VITEZA + FAILSAFE ===== */
         if (!line_detected_once) {

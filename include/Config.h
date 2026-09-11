@@ -30,4 +30,11 @@
 // 1.0f = Car reacts strongly to the angle of the line ahead (turns early)
 #define HEADING_FACTOR 1.0f
 
+// Steering PD Controller Tuning
+#define STEER_KP 4.0f
+#define STEER_KD 0.5f
+
+// Steering Smoothing (0.0f = no smoothing/instant, 0.9f = very slow/smooth)
+#define STEERING_ALPHA 0.7f
+
 #endif
