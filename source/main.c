@@ -49,7 +49,7 @@ int main(void) {
         4.0f; /* Proportional - mult crescut pentru a vira puternic */
     const float KD = 0.5f;         /* Derivative - oprit */
     const float WEIGHT_CTE = 1.0f; /* Cat de mult conteaza pozitia laterala */
-    const float WEIGHT_HEADING = 1.0f; /* Unghiul conteaza mult pe curbe mari */
+    const float WEIGHT_HEADING = HEADING_FACTOR; /* Preluat din Config.h */
     const float STEER_ALPHA =
         0.7f; /* 70% smoothing - tine volanul stabil dar puternic */
 

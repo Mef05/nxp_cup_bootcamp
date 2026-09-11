@@ -18,11 +18,16 @@
 
 // Electronic Differential Factor
 // 0.0f = No differential, 1.0f = Strong differential (stops inner wheel on tight turns)
-#define DIFFERENTIAL_FACTOR 0.5f
+#define DIFFERENTIAL_FACTOR 0.3f
 
 // Lookahead factor for line tracking
-// 0.0f = Only look at the bottom of the line (close to car)
-// 1.0f = Only look at the top of the line (far away/future)
-#define LOOKAHEAD_FACTOR 0.6f
+// 0.0f = Only look at the bottom of the line (close to car) -> Turns LATE
+// 1.0f = Only look at the top of the line (far away/future) -> Turns EARLY
+#define LOOKAHEAD_FACTOR 0.2f
+
+// Heading anticipation factor
+// 0.0f = Car only cares about its position on the track
+// 1.0f = Car reacts strongly to the angle of the line ahead (turns early)
+#define HEADING_FACTOR 1.0f
 
 #endif
