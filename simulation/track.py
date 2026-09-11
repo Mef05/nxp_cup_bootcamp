@@ -44,17 +44,33 @@ class Curve:
 # Approximate dimensions of an NXP Cup arena (~6 m x 4 m inner loop).
 
 TRACK_SEGMENTS = [
-    Straight(1.5),
-    Curve(0.60, 90),   # left 90 deg
-    Straight(1.5657),
-    Curve(0.60, 90),   # left 90 deg
-    Straight(1.2657),
-    Curve(0.60, 90),   # left 90 deg
-    Straight(0.6),
-    Curve(0.40, -45),  # chicane right
-    Curve(0.40, 45),   # chicane left (back to straight)
-    Straight(0.4),
-    Curve(0.60, 90),   # left 90 deg  (closes the loop)
+    # Start straight
+    Straight(1.15),
+    
+    # Chicane right-left
+    Curve(0.60, -45),
+    Curve(0.60, 45),
+    
+    # Approach to intersection
+    Straight(0.65),
+    
+    # The big figure-8 Left loop (270 degrees)
+    # Starts facing East, ends facing South
+    Curve(1.5, 270),
+    
+    # Intersection straight (crosses the start straight)
+    Straight(0.65),
+    
+    # Chicane left-right
+    Curve(0.60, 45),
+    Curve(0.60, -45),
+    
+    # Approach to second loop
+    Straight(1.15),
+    
+    # The big figure-8 Right loop (270 degrees)
+    # Starts facing South, ends facing East (back at start)
+    Curve(1.5, -270),
 ]
 
 
