@@ -86,8 +86,8 @@ int main(void) {
 
             /* --- Clasificare vectori stanga/dreapta --- */
             bool have_left = false, have_right = false;
-            float left_bot = 0.0f, left_top = 0.0f;
-            float right_bot = 0.0f, right_top = 0.0f;
+            float left_bot = 0.0f, left_top = 0.0f, left_bot_y = 0.0f;
+            float right_bot = 0.0f, right_top = 0.0f, right_bot_y = 0.0f;
             float best_left_dist = 1000.0f;
             float best_right_dist = 1000.0f;
 
@@ -126,6 +126,7 @@ int main(void) {
                     if (dist < best_left_dist) {
                         best_left_dist = dist;
                         left_bot = bot_x;
+                        left_bot_y = bot_y;
                         left_top = top_x;
                         have_left = true;
                     }
@@ -134,6 +135,7 @@ int main(void) {
                     if (dist < best_right_dist) {
                         best_right_dist = dist;
                         right_bot = bot_x;
+                        right_bot_y = bot_y;
                         right_top = top_x;
                         have_right = true;
                     }
@@ -141,42 +143,59 @@ int main(void) {
             }
 
             /* --- Calcul eroare --- */
-            float center_bot, center_top;
+            float center_bot, center_top, center_bot_y;
             const float TRACK_WIDTH_PX =
                 45.0f; // Latimea aproximativa a pistei in pixeli
 
             if (have_left && have_right) {
                 center_bot = (left_bot + right_bot) * 0.5f;
                 center_top = (left_top + right_top) * 0.5f;
+                center_bot_y = (left_bot_y + right_bot_y) * 0.5f;
                 frames_lost = 0;
             } else if (have_left) {
                 center_bot = left_bot + (TRACK_WIDTH_PX * 0.5f);
                 center_top = left_top + (TRACK_WIDTH_PX * 0.5f);
+                center_bot_y = left_bot_y;
                 frames_lost = 0;
             } else if (have_right) {
                 center_bot = right_bot - (TRACK_WIDTH_PX * 0.5f);
                 center_top = right_top - (TRACK_WIDTH_PX * 0.5f);
+                center_bot_y = right_bot_y;
                 frames_lost = 0;
             } else {
                 frames_lost++;
                 center_bot = IMAGE_CENTER_X; // dummy
                 center_top = IMAGE_CENTER_X; // dummy
+                center_bot_y = MIN_BOT_Y;    // dummy
             }
 
             if (frames_lost == 0) {
                 // Determine target point based on lookahead
                 float target_x = center_bot * (1.0f - LOOKAHEAD_FACTOR) + center_top * LOOKAHEAD_FACTOR;
-                
+
                 float cte = target_x - IMAGE_CENTER_X;
                 float heading = center_top - center_bot;
-                error = (WEIGHT_CTE * cte) + (WEIGHT_HEADING * heading);
+
+                // Scale error linearly by proximity: the further the line
+                // is from the car (low bot_y), the less aggressively we steer.
+                // proximity = 0.0 when line is at MIN_BOT_Y (far)
+                // proximity = 1.0 when line is at bottom of image (close)
+                const float IMAGE_H = 51.0f;
+                float proximity = (center_bot_y - MIN_BOT_Y) / (IMAGE_H - MIN_BOT_Y);
+                if (proximity < 0.0f) proximity = 0.0f;
+                if (proximity > 1.0f) proximity = 1.0f;
+                // Apply minimum scale from config so car doesn't ignore far curves completely
+                float steer_scale = MIN_STEER_SCALE + (1.0f - MIN_STEER_SCALE) * proximity;
+
+                error = steer_scale * ((WEIGHT_CTE * cte) + (WEIGHT_HEADING * heading));
 
                 if (do_print)
-                    PRINTF("%s cbot:%d cte:%d hdg:%d err:%d\r\n",
+                    PRINTF("%s cbot:%d cte:%d hdg:%d prox:%d err:%d\r\n",
                            (have_left && have_right)
                                ? "L+R"
                                : (have_left ? "L  " : "  R"),
-                           (int)center_bot, (int)cte, (int)heading, (int)error);
+                           (int)center_bot, (int)cte, (int)heading,
+                           (int)(proximity * 100.0f), (int)error);
             }
         } else {
             frames_lost++;

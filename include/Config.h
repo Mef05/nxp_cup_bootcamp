@@ -42,7 +42,12 @@
 // Pixy2 image is 79x51px. Y=0=top(far), Y=51=bottom(close to car).
 // Higher value = car only reacts to lines very close to it (turns LATER)
 // Lower value = car reacts to lines further away (turns EARLIER)
-// Start with 20 and adjust. If turning too early, INCREASE this value.
 #define MIN_BOT_Y 30.0f
+
+// Minimum steering scale applied when a curve is at maximum distance (MIN_BOT_Y)
+// 0.0f = No steering at all for far curves (fully gentle approach)
+// 1.0f = Full steering regardless of distance (disables proximity scaling)
+// Recommended: 0.2f - starts gently and ramps up as car approaches curve
+#define MIN_STEER_SCALE 0.2f
 
 #endif
