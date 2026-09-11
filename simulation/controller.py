@@ -154,10 +154,17 @@ class NXPController:
                 vy1 = float(vectors[i][3])
 
                 # main.c lines 100-104: MIN_DY filter (ignore near-horizontal)
-                dy = vy0 - vy1
-                if dy < 0.0:
-                    dy = -dy
-                if dy < MIN_DY:
+                dx = vx1 - vx0
+                dy = vy1 - vy0
+                abs_dx = abs(dx)
+                abs_dy = abs(dy)
+
+                # 1. Filter small vertical span (main.c line 103)
+                if abs_dy < MIN_DY:
+                    continue
+
+                # 2. Filter horizontal lines (intersections) (main.c line ~110)
+                if abs_dx > abs_dy * 1.5:
                     continue
 
                 # main.c lines 108-115: determine bottom (high Y) and top point

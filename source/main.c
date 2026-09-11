@@ -97,10 +97,19 @@ int main(void) {
                 float vy1 = (float)vectors[i * 4 + 3];
 
                 /* Filtram vectorii aproape orizontali */
-                float dy = vy0 - vy1;
-                if (dy < 0.0f)
-                    dy = -dy;
-                if (dy < MIN_DY)
+                float dx = vx1 - vx0;
+                float dy = vy1 - vy0;
+                float abs_dx = (dx < 0.0f) ? -dx : dx;
+                float abs_dy = (dy < 0.0f) ? -dy : dy;
+
+                /* 1. Filter vectors that are too small vertically */
+                if (abs_dy < MIN_DY)
+                    continue;
+                    
+                /* 2. Filter horizontal lines (intersections). 
+                 * If dx is > 1.5 * dy, the line is more horizontal than vertical.
+                 * This perfectly rejects intersection crossing markers. */
+                if (abs_dx > abs_dy * 1.5f)
                     continue;
 
                 /* Determinam punctul de jos (aproape de masina, Y mare) si cel
