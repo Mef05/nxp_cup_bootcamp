@@ -83,10 +83,24 @@ else:
 class SimulationRunner:
     """Runs the full simulation loop and maintains visualisation state."""
 
-    def __init__(self) -> None:
+    def __init__(self, config_overrides: dict = None) -> None:
         # Build track geometry once
         self.centreline = get_track_centerline()
         self.left_boundary, self.right_boundary = get_track_boundaries()
+
+        # Apply config overrides to the modules that use them
+        if config_overrides:
+            import controller as ctrl
+            import camera as cam
+            import track as trk
+            import bicycle_model as bm
+            import config as cfg
+            import sys
+            this_mod = sys.modules[__name__]
+            for module in [ctrl, cam, trk, bm, cfg, this_mod]:
+                for k, v in config_overrides.items():
+                    if hasattr(module, k):
+                        setattr(module, k, v)
 
         # Sub-systems
         self.car = BicycleModel(_x0, _y0, _theta0)

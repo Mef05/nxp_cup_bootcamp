@@ -125,7 +125,12 @@ class Pixy2Camera:
         # After tilting camera down by tilt_rad around the camera X axis:
         cam_z = fwd * math.cos(self._tilt_rad) + h * math.sin(self._tilt_rad)
         cam_y = -fwd * math.sin(self._tilt_rad) + h * math.cos(self._tilt_rad)
-        cam_x = lat
+        # Negate lat: the 2D rotation by -theta gives positive lat for points
+        # to the LEFT of the car (e.g. car heading east -> left = +Y = +lat).
+        # The camera image X axis points RIGHT, so cam_x must be negative for
+        # left-of-car and positive for right-of-car. Without this negation the
+        # boundaries are swapped in the image, inverting all steering decisions.
+        cam_x = -lat
 
         if cam_z <= 0.0:
             return None
