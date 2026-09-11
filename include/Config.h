@@ -6,8 +6,8 @@
 #define STEERING_P_LEFT 50U
 
 // Physical steering limits
-#define STEERING_LIMIT_RIGHT 80
-#define STEERING_LIMIT_LEFT -80
+#define STEERING_LIMIT_RIGHT 70
+#define STEERING_LIMIT_LEFT -70
 
 // Steering angle offset
 #define STEERING_OFFSET 13
@@ -16,15 +16,14 @@
 #define SPEED_RIGHT 90
 #define SPEED_LEFT 90
 
-// Electronic Differential Factor
-// 0.0f = No differential, 1.0f = Strong differential (stops inner wheel on tight turns)
-#define DIFFERENTIAL_FACTOR 0.3f
+// Electronic differential: fraction of inner-wheel speed reduction per % steer
+// 0.0 = no diff, 1.0 = stops inner wheel completely on max steer
+#define DIFFERENTIAL_FACTOR 0.15f
 
-// Lookahead factor for line tracking
-// 0.0f = Only// Lookahead blending factor between bottom (close) and top (far) of detected line
+// Lookahead blending factor between bottom (close) and top (far) of detected line
 // 0.0 = react to closest point only (turns LATE)
 // 1.0 = react to furthest point only (turns EARLY)
-#define LOOKAHEAD_FACTOR 0.72f
+#define LOOKAHEAD_FACTOR 0.60f
 
 // Heading anticipation weight added to the error signal
 // 0.0 = only lateral position error (CTE) - recommended
@@ -36,8 +35,8 @@
 // 0.0f = pure linear (no extra mid-curve aggression)
 // 0.1f = moderate (recommended starting point)
 // 0.3f = very aggressive mid-curve
-#define STEER_KP_Q 0.20f
-#define STEER_KD 0.8f
+#define STEER_KP_Q 0.30f
+#define STEER_KD 1.0f
 
 // Steering Smoothing (0.0f = no smoothing/instant, 0.9f = very slow/smooth)
 #define STEERING_ALPHA 0.1f
@@ -49,9 +48,9 @@
 // Lower value  -> car reacts to distant lines (turns EARLIER).
 #define MIN_BOT_Y 10.0f
 
-// Minimum steering scale applied when a curve is at maximum distance (MIN_BOT_Y)
-// 0.0f = No steering at all for far curves
-// 1.0f = Full steering regardless of distance
+// Minimum steering scale applied when a curve is at maximum distance
+// (MIN_BOT_Y) 0.0f = No steering at all for far curves 1.0f = Full steering
+// regardless of distance
 #define MIN_STEER_SCALE 0.4f
 
 #endif
