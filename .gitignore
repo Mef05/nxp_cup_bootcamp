@@ -116,3 +116,23 @@ ehthumbs_vista.db
 # Logs
 logs
 *.log
+
+# MCUXpresso Generated / SDK files
+.settings/
+.project
+.cproject
+.default_mex
+*.launch
+CMakeLists.txt
+CMakePresets.json
+*.cmake
+mcux_include.json
+board/
+drivers/
+device/
+CMSIS/
+CMSIS_driver/
+component/
+utilities/
+startup/
+doc/
