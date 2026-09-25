@@ -1,9 +1,43 @@
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
 # Build directories and outputs
 Debug/
 Release/
 build/
-*.o
-*.obj
+bin/
+obj/
+out/
 *.axf
 *.map
 *.bin
@@ -11,13 +45,94 @@ build/
 *.elf
 *.su
 
+
 # IDE and tool specific
 .clangd/
 compile_commands.json
+.vs/
+.vscode/
+cmake-build-*/
+.idea/
+*.swp
+*~
+*.bak
 
-# If you use VSCode and don't want to share workspace settings
-# .vscode/
+# Eclipse
+*.pydevproject
+.metadata
+.gradle
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.recommenders
+*.launch
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
 
 # OS generated files
 .DS_Store
-Thumbs.db
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+ehthumbs_vista.db
+[Tt]humbs.db
+[Dd]esktop.ini
+
+# Logs
+logs
+*.log
+
+# MCUXpresso Generated / SDK files
+.settings/
+.project
+.cproject
+.default_mex
+*.launch
+CMakeLists.txt
+CMakePresets.json
+*.cmake
+mcux_include.json
+board/
+drivers/
+device/
+CMSIS/
+CMSIS_driver/
+component/
+utilities/
+startup/
+doc/
